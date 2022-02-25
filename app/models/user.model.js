@@ -1,39 +1,47 @@
-module.exports = (sequelize, Sequelize) => {
-    const User = sequelize.define("uSERS", {
-        id: {
-        type: Sequelize.INTEGER                     
-      },
-      name: {
-        type: Sequelize.STRING
-      },
-      email: {
-        type: Sequelize.STRING
-      },
-      gender: {
-        type:   Sequelize.ENUM,
-        values: ['male','female']
-      },
-      password: {
-        type: Sequelize.STRING
-      },
-      role: {
-        type:   Sequelize.ENUM,
-        values: ['Admin','Customer','Manufacturer']
-      },
-      status: {
-        type:   Sequelize.ENUM,
-        values: ['Active','Deactive']
-      },
-      isVerify: {
-        type: Sequelize.INTEGER                     
-      },
-      otp: {
-        type: Sequelize.INTEGER                     
-      },
-      expiryOtpTime: {
-        type: Sequelize.INTEGER                     
-      },
-     
-    });
+'use strict';
+
+module.exports = (sequelize, DataTypes) => {
+    const User = sequelize.define('user', {
+        username: {
+            type: DataTypes.STRING,
+
+        },
+        email: {
+            type: DataTypes.STRING,
+
+        },
+        gender: {
+            type: DataTypes.ENUM,
+            values: ['male', 'female'],
+        },
+        password: {
+            type: DataTypes.STRING,
+
+        },
+        role: {
+            type: DataTypes.ENUM,
+            values: ['Admin', 'Customer', 'Manufacturer'],
+
+        },
+        status: {
+            type: DataTypes.ENUM,
+            values: ['Active', 'Deactive'],
+        },
+        isVerify: {
+            type: DataTypes.INTEGER,
+
+        },
+        otp: {
+            type: DataTypes.INTEGER,
+
+        },
+        expiryOtpTime: {
+            type: DataTypes.INTEGER,
+        },
+
+    }, {});
+    User.associate = function (models) {
+        // associations can be defined here
+    };
     return User;
-  };
+};
