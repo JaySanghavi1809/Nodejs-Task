@@ -25,6 +25,7 @@ db.item = require("./item")(sequelize, Sequelize);
 db.order = require("./order")(sequelize, Sequelize);
 db.manufacture = require("./manufactures")(sequelize, Sequelize);
 db.role = require("./role.model")(sequelize, Sequelize)
+db.Customer = require('../models/customer.model.js')(sequelize, Sequelize);
 // db.user.hasMany(db.order, { as: "orders" });
 //one - to - one relationship 
 db.order.belongsTo(db.user, {

@@ -9,7 +9,6 @@ module.exports = function (app) {
     [
         checkAuthMiddleware.authJwt.verifyToken
     ]
-    
     ,
     ItemController.create);
 
