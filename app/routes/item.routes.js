@@ -5,30 +5,38 @@ module.exports = function (app) {
 
 
     // Create a new Item
-    app.post("/api/item",
-    [
-        checkAuthMiddleware.authJwt.verifyToken
-    ]
-    ,
-    ItemController.create);
+    app.post("/api/items/create",
+        [
+            checkAuthMiddleware.authJwt.verifyToken
+        ]
+        ,
+        ItemController.create);
 
-    // Retrieve all item
-    app.get("/api/items", ItemController.findAll);
+    app.get('/api/items/all', ItemController.retrieveAllItems);
 
-    // Retrieve a single Item by Id
-    app.get("/api/items/:itemId", ItemController.findByPk);
+    app.get('/api/items/onebyid/:id', ItemController.getItemById);
 
-    // Update a item with Id
-    app.put("/api/items/:itemId",
-    [
-        checkAuthMiddleware.authJwt.verifyToken 
-    ],
-    ItemController.update);
+    app.get('/api/items/filteringbyprice', ItemController.filteringByPrice);
 
-    // Delete a item with Id
-    app.delete("/api/items/:itemId",
-    [
-        checkAuthMiddleware.authJwt.verifyToken
-    ],
-    ItemController.delete);
+    app.get('/api/items/pagination', ItemController.pagination);
+
+    app.get('/api/items/pagefiltersort', ItemController.pagingfilteringsorting);
+
+    app.put('/api/items/update/:id',
+        [
+            checkAuthMiddleware.authJwt.verifyToken
+        ]
+        ,
+        ItemController.updateById);
+        
+    app.delete('/api/items/delete/:id',
+        [
+            checkAuthMiddleware.authJwt.verifyToken
+        ]
+        ,
+        ItemController.deleteById);
+
 };
+
+
+

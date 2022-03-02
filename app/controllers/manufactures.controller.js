@@ -1,6 +1,9 @@
-const db = require("../models")
-const Manufactures = db.manufacture;
+const db = require('../config/db.config.js');
+const model = require('../models');
+const item = require('../models/item.js');
 
+const Item = model.item;
+const Manufactures = model.manufacture;
 exports.create = (req, res) => {
     Manufactures.create({
         manufactureName: req.body.manufactureName,
@@ -82,4 +85,18 @@ exports.delete = (req, res) => {
             error: error
         });
     });
-};
+
+}
+
+exports.getAllBadges = async (req, res) => {
+    Manufactures.findAll({
+        include: [{
+          model: item,
+          as: 'Instruments',
+          required: false
+          }]
+        })
+    } 
+    
+    
+      

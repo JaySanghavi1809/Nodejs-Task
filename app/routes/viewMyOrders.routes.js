@@ -1,23 +1,20 @@
-const { verifySignUp } = require("../middleware");
-const controller = require("../controllers/auth.controller");
+const ViewOrderController = require("../controllers/ViewOrder.controller");
+const checkAuthMiddleware = require('../middleware');
 
-module.exports = function(app) {
-  app.use(function(req, res, next) {
-    res.header(
-      "Access-Control-Allow-Headers",
-      "x-access-token, Origin, Content-Type, Accept"
-    );
-    next();
-  });
+module.exports = function (app) {
 
-  app.post(
-    '/api/auth/signup', 
-    [
-      verifySignUp.checkDuplicateUsernameOrEmail,
-       verifySignUp.checkRolesExisted
-     ],
-    controller.signup
-   );
 
-  app.post("/api/auth/signin", controller.signin);
+    // Create a new Item
+    app.post("/api/viewOrder",
+        [
+            checkAuthMiddleware.authJwt.verifyToken
+        ]
+
+        ,
+        OrderController.create);
+
+    // Retrieve all item
+    app.get("/api/viewOrdersAll", OrderController.findAll);
+
+ 
 };

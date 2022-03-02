@@ -57,6 +57,7 @@ exports.update = (req, res) => {
             userId: req.body.userId,
             status: req.body.status,
             quantity: req.body.quantity,
+    
         },
         { where: { id: req.params.orderId } }
     ).then(() => {
@@ -75,7 +76,7 @@ exports.update = (req, res) => {
 // Delete a Item by Id
 exports.delete = (req, res) => {
     const id = req.params.orderId;
-    Orders.destroy({
+    Items.destroy({
         where: { id: id },
     }).then(() => {
         res.status(200).json({

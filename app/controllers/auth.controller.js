@@ -13,9 +13,7 @@ exports.signup = (req, res) => {
   User.create({
     username: req.body.username,
     email: req.body.email,
-    gender: req.body.gender,
-    password: bcrypt.hashSync(req.body.password, 8),
-
+    password: bcrypt.hashSync(req.body.password, 8)
   })
     .then(user => {
       if (req.body.roles) {
@@ -30,9 +28,6 @@ exports.signup = (req, res) => {
             res.send({ message: "User registered successfully!" });
           });
         });
-
-
-
       } else {
         // user role = 1
         user.setRoles([1]).then(() => {

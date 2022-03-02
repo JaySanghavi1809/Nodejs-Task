@@ -13,6 +13,8 @@ module.exports = function (app) {
     ,
     manufactureController.create);
 
+    app.get("/api/manufacture/getAllBadges", manufactureController.getAllBadges);
+
     // Retrieve all item
     app.get("/api/manufactures", manufactureController.findAll);
 
@@ -32,4 +34,6 @@ module.exports = function (app) {
         checkAuthMiddleware.authJwt.verifyToken
     ],
     manufactureController.delete);
+
+    
 };
