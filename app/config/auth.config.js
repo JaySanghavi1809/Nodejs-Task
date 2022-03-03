@@ -1,3 +1,4 @@
 module.exports = {
-  secret: "bezkoder-secret-key"
+  'secret': 'loizenai-super-secret-key',
+  ROLEs: ['Customer', 'Admin ', 'Manufacturer']
 };

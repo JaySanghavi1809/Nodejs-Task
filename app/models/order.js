@@ -17,14 +17,16 @@ module.exports = (sequelize, DataTypes) => {
             
         },
         status: {
-            type: DataTypes.ENUM,
-            values: ['Delivered','Dispatched','Pending','Canceled','Ordered'],
-            
-          },
+          type: DataTypes.ENUM,
+          values: ['Delivered','Dispatched','Pending','Canceled','Ordered'],
+          defaultValue: 'Pending'
+      },
           quantity: {
             type: DataTypes.INTEGER,
             
           },
+
+          
 
     }, {});
     Order.associate = models => {

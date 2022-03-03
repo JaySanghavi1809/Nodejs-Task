@@ -19,6 +19,8 @@ module.exports = function (app) {
     // Retrieve a single Item by Id
     app.get("/api/orders/:orderId", OrderController.findByPk);
 
+    app.get('/api/orders/filteringByStatus', OrderController.filteringByStatus);
+
     // Update a item with Id
     app.put("/api/orders/:orderId",
         [

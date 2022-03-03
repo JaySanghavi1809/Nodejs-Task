@@ -1,102 +1,103 @@
 const db = require('../config/db.config.js');
-const model = require('../models');
-const item = require('../models/item.js');
-
+const model = require('../models')
 const Item = model.item;
-const Manufactures = model.manufacture;
-exports.create = (req, res) => {
-    Manufactures.create({
-        manufactureName: req.body.manufactureName,
-        userId: req.body.userId,
+const Manufacture = model.manufacture
 
-    }).then((manufacture) => {
-        res.status(200).json({
-            status: true,
-            message: "manufacture information  created Successfully"
-        })
-
-    }).catch(error => {
-        res.status(500).json({
-            message: "Something went wrong",
-            error: error
-        });
-    });
-}
-
-
-
-
-
-// Get all items
-exports.findAll = (req, res) => {
-    Manufactures.findAll().then((manufactures) => {
-        res.status(200).json({
-            status: true,
-            data: manufactures
-        })
-    })
-
-}
-// Find a item by Id
-exports.findByPk = (req, res) => {
-    Manufactures.findByPk(req.params.manufacture_Id).then((manufacture) => {
-        res.status(200).json({
-            status: true,
-            data: manufacture
-        })
-    })
-}
-
-// Update a Item
-exports.update = (req, res) => {
-    const id = req.params.manufacture_Id;
-    Manufactures.update(
-        {
-            manufactureName: req.body.manufactureName,
-            userId: req.body.userId,
-        },
-        { where: { id: req.params.manufacture_Id } }
-    ).then(() => {
-        res.status(200).json({
-            status: true,
-            message: "Item updated successfully with id = " + id
-        });
-    }).catch(error => {
-        res.status(200).json({
-            message: "Something went wrong",
-            error: error
-        });
-    })
-};
-
-// Delete a Item by Id
-exports.delete = (req, res) => {
-    const id = req.params.manufacture_Id;
-    Manufactures.destroy({
-        where: { id: id },
-    }).then(() => {
-        res.status(200).json({
-            status: true,
-            message: "Item deleted successfully with id = " + id
-        });
-    }).catch(error => {
-        res.status(200).json({
-            message: "Something went wrong",
-            error: error
-        });
-    });
-
-}
-
-exports.getAllBadges = async (req, res) => {
-    Manufactures.findAll({
+exports.index = (req, res) => {
+    Manufacture.findAll({
         include: [{
-          model: item,
-          as: 'Instruments',
-          required: false
-          }]
+            model: Item,
+            as: 'items'
+        }]
+    })
+        .then((manufacture) => {
+            return res.status(200).json(manufacture)
         })
-    } 
-    
-    
-      
+        .catch((error) => {
+            return res.status(400).json(error)
+        });
+}
+
+exports.create = (req, res) => {
+    Manufacture.create({
+        manufactureName: req.body.manufactureName,
+        userId: req.body.userId
+
+    })
+        .then((manufacture) => {
+            return res.status(200).json(manufacture)
+        })
+        .catch((error) => {
+            return res.status(400).json(error)
+        });
+}
+
+exports.show = (req, res) =>{
+    User.findById(req.params.id, {
+        include: [{
+          model: Item,
+          as: 'items'
+        }]
+      })
+      .then((manufacture) => {
+        if (!manufacture) {
+          return res.status(404).json({ message: 'User Not Found' });
+        }
+  
+        return res.status(200).json(manufacture);
+      })
+      .catch((error) => {
+        return res.status(400).json(error)
+      });
+  }
+exports.update = (req, res) => {
+    Manufacture.findById(req.params.id)
+    .then((manufacture) => {
+      if (!manufacture) {
+        return res.status(404).json({ message: 'Manufacture-Unit Not Found' });
+      }
+
+      manufacture.update({
+        ...manufacture, 
+        ...req.body 
+      })
+      .then((updatedManufacture) => {
+        return res.status(200).json(updatedManufacture)
+      })
+      .catch((error) => {
+        return res.status(400).json(error)
+      });
+    })
+    .catch((error) => {
+      return res.status(400).json(error)
+    });
+
+}
+
+
+exports.destroy = (req, res) => {
+    User.findById(req.params.id)
+      .then((manufacture) => {
+        if (!manufacture) {
+          return res.status(400).json({ message: '  Manufacture-Unit Not Found' });
+        }
+  
+        manufacture.destroy()
+          .then((manufacture) => {
+            return res.status(200).json(manufacture)
+          })
+          .catch((error) => {
+            return res.status(400).json(error)
+          });
+      })
+      .catch((error) => {
+        return res.status(400).json(error)
+      });
+  }
+
+
+
+
+
+
+

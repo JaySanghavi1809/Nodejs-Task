@@ -30,6 +30,7 @@ require("./app/routes/item.routes")(app);
 require("./app/routes/manufacture.routes")(app);
 require("./app/routes/order.routes")(app);
 require("./app/routes/image.routes")(app);
+require("./app/routes/viewMyOrders.routes")(app);
 
 
 
@@ -43,16 +44,16 @@ app.listen(PORT, () => {
 function initial() {
   Role.create({
     id: 1,
-    name: "user"
+    name: "Customer"
   });
  
   Role.create({
     id: 2,
-    name: "moderator"
+    name: "Admin"
   });
  
   Role.create({
     id: 3,
-    name: "admin"
+    name: "Manufacturer"
   });
 }

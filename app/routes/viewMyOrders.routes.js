@@ -1,20 +1,34 @@
-const ViewOrderController = require("../controllers/ViewOrder.controller");
-const checkAuthMiddleware = require('../middleware');
+const viewMyOrders = require('../controllers/orders.controller')
+const checkAuthMiddleware = require('../middleware')
 
 module.exports = function (app) {
 
+    app.get("/api/viewOrder/viewAll", 
+    [
+        checkAuthMiddleware.authJwt.verifyToken
+    ],
+    
+    viewMyOrders.findAll);
 
-    // Create a new Item
-    app.post("/api/viewOrder",
+    // Retrieve a single Item by Id
+    app.get("/api/viewOrder/:orderId",
+    [
+        checkAuthMiddleware.authJwt.verifyToken
+    ],
+    
+    viewMyOrders.findByPk);
+
+    // Update a item with Id
+    app.put("/api/viewOrder/:orderId",
         [
             checkAuthMiddleware.authJwt.verifyToken
-        ]
+        ],
+        viewMyOrders.update);
 
-        ,
-        OrderController.create);
-
-    // Retrieve all item
-    app.get("/api/viewOrdersAll", OrderController.findAll);
-
- 
+    // Delete a item with Id
+    app.delete("/api/viewOrder/:orderId",
+        [
+            checkAuthMiddleware.authJwt.verifyToken
+        ],
+        viewMyOrders.delete);
 };

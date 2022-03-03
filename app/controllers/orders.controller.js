@@ -46,6 +46,28 @@ exports.findByPk = (req, res) => {
     })
 }
 
+exports.filteringByStatus = (req, res) => {
+    let status = req.query.status;
+  
+      Orders.findAll({
+                        attributes: ['id', 'orderNo', 'orderDate', 'itemId', 'userId', 'status', 'quantity'],
+                        where: {status: status}
+                      })
+            .then(results => {
+              res.status(200).json({
+                  message: "Get all order with status = " + status,
+                  orders: results,
+              });
+            })
+            . catch(error => {
+                console.log(error);
+                res.status(500).json({
+                  message: "Error!",
+                  error: error
+                });
+              });
+  }
+
 // Update a Item
 exports.update = (req, res) => {
     const id = req.params.orderId;
@@ -76,7 +98,7 @@ exports.update = (req, res) => {
 // Delete a Item by Id
 exports.delete = (req, res) => {
     const id = req.params.orderId;
-    Items.destroy({
+    Orders.destroy({
         where: { id: id },
     }).then(() => {
         res.status(200).json({

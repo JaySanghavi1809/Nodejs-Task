@@ -25,7 +25,6 @@ db.item = require("./item")(sequelize, Sequelize);
 db.order = require("./order")(sequelize, Sequelize);
 db.manufacture = require("./manufactures")(sequelize, Sequelize);
 db.role = require("./role.model")(sequelize, Sequelize)
-db.viewOrder = require("./viewOrder")(sequelize, Sequelize)
 // db.user.hasMany(db.order, { as: "orders" });
 //one - to - one relationship 
 db.order.belongsTo(db.user, {
@@ -39,16 +38,6 @@ db.item.belongsTo(db.manufacture, {
 db.order.belongsTo(db.item, {
   foreignKey: "itemId",
   as: "item",
-});
-
-db.viewOrder.belongsTo(db.order, {
-  foreignKey: "orderId",
-  as: "order",
-});
-
-db.viewOrder.belongsTo(db.user, {
-  foreignKey: "userId",
-  as: "user",
 });
 
 db.manufacture.belongsTo(db.user, {

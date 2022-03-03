@@ -6,9 +6,9 @@
  const db = require('../config/db.config.js');
  const model = require('../models')
  const Item = model.item;
+ const Manufacture = model.manufacture
  
-
-exports.create = (req, res) => {
+   exports.create = (req, res) => {
     let item = {};
 
     try{

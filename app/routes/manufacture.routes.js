@@ -4,36 +4,31 @@ const checkAuthMiddleware = require('../middleware');
 module.exports = function (app) {
 
 
-    // Create a new manufacture
-    app.post("/api/manufacture",
+    app.post("/api/manufacture/create",
     [
         checkAuthMiddleware.authJwt.verifyToken
     ]
-    
     ,
     manufactureController.create);
 
-    app.get("/api/manufacture/getAllBadges", manufactureController.getAllBadges);
+    app.get('/api/manufacture/index', manufactureController.index);
 
-    // Retrieve all item
-    app.get("/api/manufactures", manufactureController.findAll);
+    app.get('/api/manufactures/:id', manufactureController.show);
 
-    // Retrieve a single Item by Id
-    app.get("/api/manufactures/:manufacture_Id", manufactureController.findByPk);
-
-    // Update a item with Id
-    app.put("/api/manufactures/:manufacture_Id",
+    app.put('/api/manufactures/:id',
     [
         checkAuthMiddleware.authJwt.verifyToken 
-    ],
+    ]
+    ,
     manufactureController.update);
 
-    // Delete a item with Id
-    app.delete("/api/manufactures/:manufacture_Id",
+    app.delete('/api/manufactures/:id',
     [
         checkAuthMiddleware.authJwt.verifyToken
     ],
-    manufactureController.delete);
-
     
+    manufactureController.destroy);
+   
 };
+
+
