@@ -5,33 +5,38 @@ module.exports = function (app) {
 
 
     // Create a new Item
-    app.post("/api/order",
+    app.post("/api/orders/create",
         [
             checkAuthMiddleware.authJwt.verifyToken
         ]
-
         ,
         OrderController.create);
 
-    // Retrieve all item
-    app.get("/api/orders", OrderController.findAll);
+    app.get('/api/orders/all', OrderController.retrieveAllOrder);
 
-    // Retrieve a single Item by Id
-    app.get("/api/orders/:orderId", OrderController.findByPk);
+    app.get('/api/orders/onebyid/:id', OrderController.getOrderById);
 
-    app.get('/api/orders/filteringByStatus', OrderController.filteringByStatus);
+    app.get('/api/orders/filteringBystatus', OrderController.filteringByStatus);
 
-    // Update a item with Id
-    app.put("/api/orders/:orderId",
+    app.get('/api/orders/pagination', OrderController.pagination);
+
+    app.get('/api/orders/pagefiltersort', OrderController.pagingfilteringsorting);
+
+    app.put('/api/order/update/:id',
         [
             checkAuthMiddleware.authJwt.verifyToken
-        ],
-        OrderController.update);
+        ]
+        ,
+        OrderController.updateById);
 
-    // Delete a item with Id
-    app.delete("/api/orders/:orderId",
+    app.delete('/api/order/delete/:id',
         [
             checkAuthMiddleware.authJwt.verifyToken
-        ],
-        OrderController.delete);
+        ]
+        ,
+        OrderController.deleteById);
+
 };
+
+
+

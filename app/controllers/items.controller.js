@@ -4,8 +4,10 @@
  */
 
  const db = require('../config/db.config.js');
+const { manufacture } = require('../models');
  const model = require('../models')
  const Item = model.item;
+ const Orders = model.order
  const Manufacture = model.manufacture
  
    exports.create = (req, res) => {
@@ -37,9 +39,14 @@
     }
 }
 
-exports.retrieveAllItems = (req, res) => {
+exports.retrieveAllItems = async(req, res) => {
     // find all Item information from 
-    Item.findAll()
+    await Item.findAll({
+      include: [{
+        model: manufacture,
+        as: 'articles'
+      }]
+    })
         .then(iteminfo => {
             res.status(200).json({
                 message: "Get all Items' Infos Successfully!",

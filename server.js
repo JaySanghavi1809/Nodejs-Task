@@ -30,7 +30,8 @@ require("./app/routes/item.routes")(app);
 require("./app/routes/manufacture.routes")(app);
 require("./app/routes/order.routes")(app);
 require("./app/routes/image.routes")(app);
-require("./app/routes/viewMyOrders.routes")(app);
+// require("./app/routes/viewMyOrders.routes")(app);
+require("./app/routes/userInfo.routes")(app);
 
 
 
@@ -41,19 +42,3 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-function initial() {
-  Role.create({
-    id: 1,
-    name: "Customer"
-  });
- 
-  Role.create({
-    id: 2,
-    name: "Admin"
-  });
- 
-  Role.create({
-    id: 3,
-    name: "Manufacturer"
-  });
-}

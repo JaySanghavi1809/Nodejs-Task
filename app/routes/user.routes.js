@@ -13,15 +13,15 @@ module.exports = function(app) {
   app.get("/api/test/all", controller.allAccess);
 
   app.get(
-    "/api/test/customer",
+    "/api/test/user",
     [authJwt.verifyToken],
-    controller.CustomerBoard
+    controller.userBoard
   );
 
   app.get(
     "/api/test/manufacturer",
     [authJwt.verifyToken, authJwt.isManufacturer],
-    controller.ManufacturerBoard
+    controller.manufacturerBoard
   );
 
   app.get(

@@ -1,34 +1,36 @@
-const manufactureController = require("../controllers/manufactures.controller");
+const ManufactureController = require("../controllers/manufactures.controller");
 const checkAuthMiddleware = require('../middleware');
 
 module.exports = function (app) {
 
 
-    app.post("/api/manufacture/create",
-    [
-        checkAuthMiddleware.authJwt.verifyToken
-    ]
-    ,
-    manufactureController.create);
+    // Create a new Item
+    app.post("/api/manufactures/create",
+        [
+            checkAuthMiddleware.authJwt.verifyToken
+        ]
+        ,
+        ManufactureController.create);
 
-    app.get('/api/manufacture/index', manufactureController.index);
+    app.get('/api/manufactures/all', ManufactureController.retrieveAllManufacture);
 
-    app.get('/api/manufactures/:id', manufactureController.show);
+    app.get('/api/manufactures/onebyid/:id', ManufactureController.getManufactureById);
+ 
+    app.put('/api/manufacture/update/:id',
+        [
+            checkAuthMiddleware.authJwt.verifyToken
+        ]
+        ,
+        ManufactureController.updateById);
+        
+    app.delete('/api/manufacture/delete/:id',
+        [
+            checkAuthMiddleware.authJwt.verifyToken
+        ]
+        ,
+        ManufactureController.deleteById);
 
-    app.put('/api/manufactures/:id',
-    [
-        checkAuthMiddleware.authJwt.verifyToken 
-    ]
-    ,
-    manufactureController.update);
-
-    app.delete('/api/manufactures/:id',
-    [
-        checkAuthMiddleware.authJwt.verifyToken
-    ],
-    
-    manufactureController.destroy);
-   
 };
+
 
 

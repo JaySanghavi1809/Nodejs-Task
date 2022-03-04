@@ -21,7 +21,7 @@ module.exports = function (app) {
     app.get('/api/items/pagination', ItemController.pagination);
 
     app.get('/api/items/pagefiltersort', ItemController.pagingfilteringsorting);
-
+ 
     app.put('/api/items/update/:id',
         [
             checkAuthMiddleware.authJwt.verifyToken
