@@ -47,6 +47,109 @@ exports.findByPk = (req, res) => {
     })
 }
 
+
+exports.filteringByStatus = (req, res) => {
+    let status = req.query.status;
+  
+    ViewOrder.findAll({
+                        
+                        attributes: ['id', 'orderNo', 'orderDate', 'itemId', 'userId', 'status','quantity'],
+                        where: {status: status},
+                      })
+            .then(results => {
+              res.status(200).json({
+                  message: "Get all ViewOrder with status = " + status,
+                  orders: results,
+              });
+            })
+            . catch(error => {
+                console.log(error);
+                res.status(500).json({
+                  message: "Error!",
+                  error: error
+                });
+              });
+  }
+   
+  exports.pagination = (req, res) => {
+    try{
+      let page = Number.parseInt(req.query.page);
+      let limit = Number.parseInt(req.query.limit);
+    
+      const offset = page ? page * limit : 0;
+      console.log(page,limit)
+    
+      Item.findAndCountAll({ limit: limit, offset:offset })
+        .then(data => {
+          const totalPages = Math.ceil(data.count / limit);
+          const response = {
+            message: "Paginating is completed! Query parameters: page = " + page + ", limit = " + limit,
+            data: {
+                "totalItems": data.count,
+                "totalPages": totalPages,
+                "limit": limit,
+                "currentPageNumber": page + 1,
+                "currentPageSize": data.rows.length,
+                "viewOrders": data.rows
+                
+            }
+          };
+          res.send(response);
+        });  
+    }catch(error) {
+      res.status(500).send({
+        message: "Error -> Can NOT complete a paging request!",
+        error: error.message,
+      });
+    }    
+  }
+  
+  exports.pagingfilteringsorting = (req, res) => {
+    try{
+      let page = Number.parseInt(req.query.page);
+      let limit = Number.parseInt(req.query.limit);
+      let status = Number.parseInt(req.query.status);
+      
+  
+      const offset = page ? page * limit : 0;
+  
+      console.log("offset = " + offset);
+    
+      Item.findAndCountAll({
+                                  attributes: ['id', 'orderNo', 'orderDate', 'itemId', 'userId', 'status','quantity'],
+                                  where: {price: price}, 
+                                  order: [
+                                    ['orderNo', 'ASC'],
+                                    ['orderDate', 'DESC']
+                                  ],
+                                  limit: limit, 
+                                  offset:offset 
+                                })
+        .then(data => {
+          const totalPages = Math.ceil(data.count / limit);
+          const response = {
+            message: "Pagination Filtering Sorting request is completed! Query parameters: page = " + page + ", limit = " + limit + ", price = " + price,
+            data: {
+                "totalItems": data.count,
+                "totalPages": totalPages,
+                "limit": limit,
+                "price-filtering": price,
+                "currentPageNumber": page + 1,
+                "currentPageSize": data.rows.length,
+                "viewOrders": data.rows
+            }
+          };
+          res.send(response);
+        });  
+    }catch(error) {
+      res.status(500).send({
+        message: "Error -> Can NOT complete a paging request!",
+        error: error.message,
+      });
+    }      
+  }
+  
+
 // Update a Item
 exports.update = (req, res) => {
     const id = req.params.orderId;

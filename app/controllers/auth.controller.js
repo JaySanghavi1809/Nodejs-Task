@@ -2,6 +2,7 @@ const db = require("../models");
 const config = require("../config/auth.config");
 const User = db.user;
 const Role = db.role;
+const Order= db.order
 
 const Op = db.Sequelize.Op;
 
@@ -13,7 +14,13 @@ exports.signup = (req, res) => {
   User.create({
     username: req.body.username,
     email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8)
+    gender: req.body.gender,
+    password: bcrypt.hashSync(req.body.password, 8),
+    role: req.body.role,
+    status: req.body.status,
+    isVerify: req.body.isVerify,
+    otp: req.body.otp,
+    expiryOtpTime: req.body.expiryOtpTime,
   })
     .then(user => {
       if (req.body.roles) {

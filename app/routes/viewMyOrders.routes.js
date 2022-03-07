@@ -1,4 +1,4 @@
-const viewMyOrders = require('../controllers/orders.controller')
+const viewMyOrders = require('../controllers/ViewOrder.controller')
 const checkAuthMiddleware = require('../middleware')
 
 module.exports = function (app) {
@@ -17,6 +17,13 @@ module.exports = function (app) {
     ],
     
     viewMyOrders.findByPk);
+
+    app.get('/api/items/filteringByStatus', viewMyOrders.filteringByStatus);
+
+    app.get('/api/items/pagination', viewMyOrders.pagination);
+
+    app.get('/api/items/pagefiltersort', viewMyOrders.pagingfilteringsorting);
+
 
     // Update a item with Id
     app.put("/api/viewOrder/:orderId",

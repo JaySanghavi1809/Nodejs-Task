@@ -12,7 +12,7 @@ module.exports = function (app) {
         ,
         UserInfoController.create);
 
-    app.get('/api/users/all', 
+    app.get('/api/users/all',
     [
         checkAuthMiddleware.authJwt.verifyToken,
         checkAuthMiddleware.verifySignUp.checkRolesExisted

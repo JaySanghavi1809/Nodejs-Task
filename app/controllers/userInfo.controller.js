@@ -44,7 +44,11 @@ exports.create = (req, res) => {
 
 exports.retrieveAllUser = (req, res) => {
     // find all Customer information from 
-    User.findAll()
+    User.findAll({
+        include: [{
+            model: Orders
+        }],
+    })
         .then(userInfos => {
             res.status(200).json({
                 message: "Get all user' Infos Successfully!",

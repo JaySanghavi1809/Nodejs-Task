@@ -31,10 +31,10 @@ db.order.belongsTo(db.user, {
   foreignKey: "userId",
   as: "user",
 });
-db.item.belongsTo(db.manufacture, {
-  foreignKey: "manufacturerId",
-  as: "manufacture",
-});
+// db.item.belongsTo(db.manufacture, {
+//   foreignKey: "manufacturerId",
+//   as: "manufacture",
+// });
 db.order.belongsTo(db.item, {
   foreignKey: "itemId",
   as: "item",
@@ -44,6 +44,21 @@ db.manufacture.belongsTo(db.user, {
   foreignKey: "userId",
   as: "user",
 });
+db.manufacture.hasMany(db.item, {
+  foreignKey: "manufacturerId",
+});
+
+db.item.hasMany(db.order, {
+  foreignKey: "userId",
+});
+
+db.user.hasMany(db.order, {
+  foreignKey: "id",
+});
+
+
+
+
 
 //MANY - TO - MANY relationship:
 db.role.belongsToMany(db.user, {
@@ -58,5 +73,5 @@ db.user.belongsToMany(db.role, {
   otherKey: "roleId"
 
 })
-db.ROLES = ["user", "admin", "moderator"];
+db.ROLES = ["Admin","Customer","Manufacturer"];
 module.exports = db;
