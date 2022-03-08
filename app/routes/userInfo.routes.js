@@ -1,5 +1,7 @@
 const UserInfoController = require("../controllers/userInfo.controller");
 const checkAuthMiddleware = require('../middleware');
+const { authPage } = require("../middleware/authJwt");
+
 
 module.exports = function (app) {
 
@@ -12,10 +14,12 @@ module.exports = function (app) {
         ,
         UserInfoController.create);
 
-    app.get('/api/users/all',
+    app.get('/api/users/all',/* authPage(["Admin"]), */
     [
         checkAuthMiddleware.authJwt.verifyToken,
-        checkAuthMiddleware.verifySignUp.checkRolesExisted
+        checkAuthMiddleware.authJwt.authPage(["Admin"])
+       
+        
     ],
   
     

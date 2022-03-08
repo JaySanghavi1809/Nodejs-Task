@@ -10,6 +10,7 @@
    var jwt = require("jsonwebtoken");
    var bcrypt = require("bcryptjs");
    
+   
 
 exports.create = (req, res) => {
     let user = {};
@@ -43,6 +44,8 @@ exports.create = (req, res) => {
 }
 
 exports.retrieveAllUser = (req, res) => {
+
+    authPage(["Admin"])
     // find all Customer information from 
     User.findAll({
         include: [{

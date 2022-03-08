@@ -23,16 +23,19 @@ exports.signup = (req, res) => {
     expiryOtpTime: req.body.expiryOtpTime,
   })
     .then(user => {
-      if (req.body.roles) {
+      if (req.body.role) {
         Role.findAll({
           where: {
             name: {
-              [Op.or]: req.body.roles
+              [Op.or]: req.body.role
             }
+            
           }
-        }).then(roles => {
-          user.setRoles(roles).then(() => {
+          
+        }).then(role => {
+          user.setRoles(role).then(() => {
             res.send({ message: "User registered successfully!" });
+            console.log(req.body.role)
           });
         });
       } else {
@@ -75,15 +78,15 @@ exports.signin = (req, res) => {
       });
 
       var authorities = [];
-      user.getRoles().then(roles => {
-        for (let i = 0; i < roles.length; i++) {
-          authorities.push("ROLE_" + roles[i].name.toUpperCase());
+      user.getRoles().then(role => {
+        for (let i = 0; i < role.length; i++) {
+          authorities.push("ROLE_" + role[i].name.toUpperCase());
         }
         res.status(200).send({
           id: user.id,
           username: user.username,
           email: user.email,
-          roles: authorities,
+          role: authorities,
           accessToken: token
         });
       });
