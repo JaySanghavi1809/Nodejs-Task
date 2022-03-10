@@ -1,6 +1,7 @@
 
 
 const db = require('../config/db.config.js');
+const { RolePermission } = require('../middleware/authJwt.js');
 const model = require('../models')
 const Item = model.item;
 const Orders = model.order
@@ -8,6 +9,7 @@ const Manufacture = model.manufacture
 
 exports.create = (req, res) => {
     let manufacture = {};
+    RolePermission(["Admin","Manufacture"])
 
     try {
         // Building Customer object from upoading request's body
@@ -77,6 +79,7 @@ exports.getManufactureById = (req, res) => {
 }
 
 exports.updateById = async (req, res) => {
+    RolePermission(["Admin","Manufacture"]);
     try {
         let manufacture_Id = req.params.id;
         let manufacture = await Manufacture.findByPk(manufacture_Id);

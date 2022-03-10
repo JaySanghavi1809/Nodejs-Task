@@ -6,7 +6,7 @@ module.exports = function (app) {
     app.get("/api/viewOrder/viewAll", 
     [
         checkAuthMiddleware.authJwt.verifyToken,
-        checkAuthMiddleware.authJwt.ordersRecord(["Admin"])
+       
        
         
     ],

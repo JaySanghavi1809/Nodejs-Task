@@ -114,6 +114,7 @@ exports.pagingfilteringsorting = (req, res) => {
 
 exports.create = (req, res) => {
   let item = {};
+  RolePermission(["Admin","Manufacture"]);
 
   try {
     // Building Item object from upoading request's body
@@ -124,6 +125,7 @@ exports.create = (req, res) => {
     item.manufacturerId = req.body.manufacturerId;
     item.price = req.body.price;
     item.image = req.body.image;
+    
 
     // Save to MySQL database
     Item.create(item).then(result => {
@@ -140,6 +142,8 @@ exports.create = (req, res) => {
     });
   }
 }
+
+
 
 exports.retrieveAllItems = async (req, res) => {
   // find all Item information from 
@@ -168,11 +172,11 @@ exports.retrieveAllItems = async (req, res) => {
 
 exports.getItemById = (req, res) => {
   // find all Item information from 
-  let itemId = req.params.id;
-  Item.findByPk(itemId)
+  let item_Id = req.params.id;
+  Item.findByPk(item_Id)
     .then(item => {
       res.status(200).json({
-        message: " Successfully Get a Item with id = " + itemId,
+        message: " Successfully Get a Item with id = " + item_Id,
         items: item
       });
     })
@@ -294,14 +298,16 @@ exports.pagingfilteringsorting = (req, res) => {
 
 
 exports.updateById = async (req, res) => {
+  RolePermission(["Admin","Manufacturer"]);
   try {
-    let itemId = req.params.id;
-    let item = await Item.findByPk(itemId);
+    
+    let item_Id = req.params.id;
+    let item = await Item.findByPk(item_Id);
 
     if (!item) {
       // return a response to client
       res.status(404).json({
-        message: "Not Found for updating a item with id = " + itemId,
+        message: "Not Found for updating a item with id = " + item_Id,
         item: "",
         error: "404"
       });
@@ -316,7 +322,8 @@ exports.updateById = async (req, res) => {
         price: req.body.price,
         image: req.body.image
       }
-      let result = await Item.update(updatedObject, { returning: true, where: { id: itemId } });
+      let result = await Item.update(updatedObject, { returning: true, where: { id: item_Id } });
+      
 
       // return the response to client
       if (!result) {
@@ -327,7 +334,7 @@ exports.updateById = async (req, res) => {
       }
 
       res.status(200).json({
-        message: "Update successfully a Item with id = " + itemId,
+        message: "Update successfully a Item with id = " + item_Id,
         item: updatedObject,
       });
     }
@@ -341,18 +348,18 @@ exports.updateById = async (req, res) => {
 
 exports.deleteById = async (req, res) => {
   try {
-    let itemId = req.params.id;
-    let item = await Item.findByPk(itemId);
+    let item_Id = req.params.id;
+    let item = await Item.findByPk(item_Id);
 
     if (!item) {
       res.status(404).json({
-        message: "Does Not exist a Item with id = " + itemId,
+        message: "Does Not exist a Item with id = " + item_Id,
         error: "404",
       });
     } else {
       await item.destroy();
       res.status(200).json({
-        message: "Delete Successfully a Item with id = " + itemId,
+        message: "Delete Successfully a Item with id = " + item_Id,
         item: item,
       });
     }
