@@ -3,30 +3,22 @@ const checkAuthMiddleware = require('../middleware')
 
 module.exports = function (app) {
 
-    app.get("/api/viewOrder/viewAll", 
-    [
-        checkAuthMiddleware.authJwt.verifyToken,
-       
-       
-        
-    ],
-    
-    viewMyOrders.findAll);
+    app.get("/api/viewOrder/viewAll",
+        [
+            checkAuthMiddleware.authJwt.verifyToken,
+            checkAuthMiddleware.authJwt.ownOrder(["Customer"])
+
+        ],
+
+        viewMyOrders.findAll);
 
     // Retrieve a single Item by Id
     app.get("/api/viewOrder/:orderId",
-    [
-        checkAuthMiddleware.authJwt.verifyToken
-    ],
-    
-    viewMyOrders.findByPk);
+        [
+            checkAuthMiddleware.authJwt.verifyToken
+        ],
 
-    app.get('/api/items/filteringByStatus', viewMyOrders.filteringByStatus);
-
-    app.get('/api/items/pagination', viewMyOrders.pagination);
-
-    app.get('/api/items/pagefiltersort', viewMyOrders.pagingfilteringsorting);
-
+        viewMyOrders.findByPk);
 
     // Update a item with Id
     app.put("/api/viewOrder/:orderId",

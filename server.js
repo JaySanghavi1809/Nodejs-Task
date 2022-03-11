@@ -49,12 +49,12 @@ function initial() {
   });
 
   Role.create({
-    id: 1,
+    id: 2,
     name: "Customer"
   });
 
   Role.create({
-    id: 1,
+    id: 3,
     name: "Manufacturer"
   });
 }

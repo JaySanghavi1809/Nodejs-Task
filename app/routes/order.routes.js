@@ -7,12 +7,18 @@ module.exports = function (app) {
     // Create a new Item
     app.post("/api/orders/create",
         [
-            checkAuthMiddleware.authJwt.verifyToken
+            checkAuthMiddleware.authJwt.verifyToken,
+            // checkAuthMiddleware.authJwt.ItemDate(["Customer"]),
         ]
         ,
         OrderController.create);
-
-    app.get('/api/orders/all', OrderController.retrieveAllOrder);
+    app.get('/api/orders/all',
+    [
+        checkAuthMiddleware.authJwt.verifyToken,
+        checkAuthMiddleware.authJwt.OrderPage(["Admin"]),
+        
+    ],
+    OrderController.retrieveAllOrder);
 
     app.get('/api/orders/onebyid/:id', OrderController.getOrderById);
 
@@ -24,7 +30,8 @@ module.exports = function (app) {
 
     app.put('/api/order/update/:id',
         [
-            checkAuthMiddleware.authJwt.verifyToken
+            checkAuthMiddleware.authJwt.verifyToken,
+            checkAuthMiddleware.authJwt.updateORDER(["Admin","Manufacture"])
         ]
         ,
         OrderController.updateById);
@@ -37,5 +44,6 @@ module.exports = function (app) {
         OrderController.deleteById);
 
 };
+
 
 

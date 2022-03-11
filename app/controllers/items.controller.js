@@ -3,7 +3,7 @@
  * youtube loizenai
  */
 
-// const db = require('../config/db.config.js');
+const db = require('../config/db.config.js');
 const model = require('../models')
 const Item = model.item;
 const Orders = model.order
@@ -15,7 +15,6 @@ exports.pagination = (req, res) => {
     let limit = req.query.limit;
 
     const offset = page ? page * limit : 0;
-    console.log(offset)
 
     Item.findAndCountAll({ limit: limit, offset: offset })
       .then(data => {
@@ -72,7 +71,7 @@ exports.pagingfilteringsorting = (req, res) => {
     let limit = req.query.limit;
     let price = req.query.price;
 
-    const offset = page ? page * limit : 1;
+    const offset = page ? page * limit : 0;
 
     console.log("offset = " + offset);
 
@@ -91,14 +90,14 @@ exports.pagingfilteringsorting = (req, res) => {
         const response = {
           message: "Pagination Filtering Sorting request is completed! Query parameters: page = " + page + ", limit = " + limit + ", price = " + price,
           data: {
+            "copyrightby": "https://loizenai.com",
             "totalItems": data.count,
             "totalPages": totalPages,
             "limit": limit,
             "price-filtering": price,
             "currentPageNumber": page + 1,
             "currentPageSize": data.rows.length,
-            "items": data.rows,
-           
+            "items": data.rows
           }
         };
         res.send(response);
@@ -113,8 +112,9 @@ exports.pagingfilteringsorting = (req, res) => {
 
 
 exports.create = (req, res) => {
+  // ItemRecord(["Admin","Manufacturer"])
   let item = {};
-  RolePermission(["Admin","Manufacture"]);
+
 
   try {
     // Building Item object from upoading request's body
@@ -125,7 +125,6 @@ exports.create = (req, res) => {
     item.manufacturerId = req.body.manufacturerId;
     item.price = req.body.price;
     item.image = req.body.image;
-    
 
     // Save to MySQL database
     Item.create(item).then(result => {
@@ -143,15 +142,16 @@ exports.create = (req, res) => {
   }
 }
 
-
-
 exports.retrieveAllItems = async (req, res) => {
+   ProductInfo(["Manufacturer"])
+
   // find all Item information from 
   await Item.findAll({
-    include: [{
-      model: Orders
-    }],
-    // where: { id: 1 }
+    // include: [{
+    //   model: Orders,
+    //   where: { id: 1 }
+    // }],
+    
   })
     .then(iteminfo => {
       res.status(200).json({
@@ -172,11 +172,11 @@ exports.retrieveAllItems = async (req, res) => {
 
 exports.getItemById = (req, res) => {
   // find all Item information from 
-  let item_Id = req.params.id;
-  Item.findByPk(item_Id)
+  let itemId = req.params.id;
+  Item.findByPk(itemId)
     .then(item => {
       res.status(200).json({
-        message: " Successfully Get a Item with id = " + item_Id,
+        message: " Successfully Get a Item with id = " + itemId,
         items: item
       });
     })
@@ -191,123 +191,16 @@ exports.getItemById = (req, res) => {
     });
 }
 
-exports.filteringByPrice = (req, res) => {
-  let price = req.query.price;
-
-    Item.findAll({
-                      
-                      attributes: ['id', 'itemName', 'itemType', 'manufactureDate', 'expiryDate', 'manufacturerId','price','image'],
-                      where: {price: price},
-                      include: [{
-                        model: Orders
-                      }],
-                    })
-          .then(results => {
-            res.status(200).json({
-                message: "Get all Items with price = " + price,
-                items: results,
-            });
-          })
-          . catch(error => {
-              console.log(error);
-              res.status(500).json({
-                message: "Error!",
-                error: error
-              });
-            });
-}
- 
-exports.pagination = (req, res) => {
-  try{
-    let page = Number.parseInt(req.query.page);
-    let limit = Number.parseInt(req.query.limit);
-  
-    const offset = page ? page * limit : 0;
-    console.log(page,limit)
-  
-    Item.findAndCountAll({ limit: limit, offset:offset })
-      .then(data => {
-        const totalPages = Math.ceil(data.count / limit);
-        const response = {
-          message: "Paginating is completed! Query parameters: page = " + page + ", limit = " + limit,
-          data: {
-              "totalItems": data.count,
-              "totalPages": totalPages,
-              "limit": limit,
-              "currentPageNumber": page + 1,
-              "currentPageSize": data.rows.length,
-              "items": data.rows
-              
-          }
-        };
-        res.send(response);
-      });  
-  }catch(error) {
-    res.status(500).send({
-      message: "Error -> Can NOT complete a paging request!",
-      error: error.message,
-    });
-  }    
-}
-
-exports.pagingfilteringsorting = (req, res) => {
-  try{
-    let page = Number.parseInt(req.query.page);
-    let limit = Number.parseInt(req.query.limit);
-    let price = Number.parseInt(req.query.price);
-    
-
-    const offset = page ? page * limit : 0;
-
-    console.log("offset = " + offset);
-  
-    Item.findAndCountAll({
-                                attributes: ['id', 'itemName', 'itemType', 'manufactureDate', 'expiryDate', 'manufacturerId','price','image'],
-                                where: {price: price}, 
-                                order: [
-                                  ['itemName', 'ASC'],
-                                  ['itemType', 'DESC']
-                                ],
-                                limit: limit, 
-                                offset:offset 
-                              })
-      .then(data => {
-        const totalPages = Math.ceil(data.count / limit);
-        const response = {
-          message: "Pagination Filtering Sorting request is completed! Query parameters: page = " + page + ", limit = " + limit + ", price = " + price,
-          data: {
-              "totalItems": data.count,
-              "totalPages": totalPages,
-              "limit": limit,
-              "price-filtering": price,
-              "currentPageNumber": page + 1,
-              "currentPageSize": data.rows.length,
-              "items": data.rows
-          }
-        };
-        res.send(response);
-      });  
-  }catch(error) {
-    res.status(500).send({
-      message: "Error -> Can NOT complete a paging request!",
-      error: error.message,
-    });
-  }      
-}
-
-
-
 exports.updateById = async (req, res) => {
-  RolePermission(["Admin","Manufacturer"]);
+  UpdateItem(["Admin","Manufacturer"])
   try {
-    
-    let item_Id = req.params.id;
-    let item = await Item.findByPk(item_Id);
+    let itemId = req.params.id;
+    let item = await Item.findByPk(itemId);
 
     if (!item) {
       // return a response to client
       res.status(404).json({
-        message: "Not Found for updating a item with id = " + item_Id,
+        message: "Not Found for updating a item with id = " + itemId,
         item: "",
         error: "404"
       });
@@ -322,8 +215,7 @@ exports.updateById = async (req, res) => {
         price: req.body.price,
         image: req.body.image
       }
-      let result = await Item.update(updatedObject, { returning: true, where: { id: item_Id } });
-      
+      let result = await Item.update(updatedObject, { returning: true, where: { id: itemId } });
 
       // return the response to client
       if (!result) {
@@ -334,7 +226,7 @@ exports.updateById = async (req, res) => {
       }
 
       res.status(200).json({
-        message: "Update successfully a Item with id = " + item_Id,
+        message: "Update successfully a Item with id = " + itemId,
         item: updatedObject,
       });
     }
@@ -347,19 +239,20 @@ exports.updateById = async (req, res) => {
 }
 
 exports.deleteById = async (req, res) => {
+  DeleteItems(["Admin"])
   try {
-    let item_Id = req.params.id;
-    let item = await Item.findByPk(item_Id);
+    let itemId = req.params.id;
+    let item = await Item.findByPk(itemId);
 
     if (!item) {
       res.status(404).json({
-        message: "Does Not exist a Item with id = " + item_Id,
+        message: "Does Not exist a Item with id = " + itemId,
         error: "404",
       });
     } else {
       await item.destroy();
       res.status(200).json({
-        message: "Delete Successfully a Item with id = " + item_Id,
+        message: "Delete Successfully a Item with id = " + itemId,
         item: item,
       });
     }

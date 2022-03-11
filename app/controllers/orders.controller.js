@@ -1,14 +1,12 @@
 const db = require('../config/db.config.js');
-const { UserCustomer } = require('../middleware/authJwt.js');
 const model = require('../models')
 const Item = model.item;
 const Orders = model.order
 const Manufacture = model.manufacture
 
 exports.create = (req, res) => {
+    OrderPage(["Admin"])
     let order = {};
-    UserCustomer(["Customer"])
-
     try {
         // Building Customer object from upoading request's body
         order.orderNo = req.body.orderNo,
@@ -17,11 +15,11 @@ exports.create = (req, res) => {
             order.userId = req.body.userId,
             order.status = req.body.status,
             order.quantity = req.body.quantity,
-            
+        console.log(order)
+
 
             // Save to MySQL database
             Orders.create(order).then(result => {
-                
                 // send uploading message to client
                 res.status(200).json({
                     message: "Upload Successfully a order with id = " + result.id,
@@ -37,10 +35,11 @@ exports.create = (req, res) => {
 }
 
 exports.retrieveAllOrder = (req, res) => {
+    // ItemDate(["Customer"]),
     // find all Customer information from 
     Orders.findAll({
-        includes: [{
-            model: Item
+        includes:[{
+            model:Item
         }]
     })
         .then(ordersInfos => {
@@ -83,6 +82,7 @@ exports.getOrderById = (req, res) => {
 
 
 exports.updateById = async (req, res) => {
+    updateORDER(["Admin","Manufacture"]);
     try {
         let order_id = req.params.id;
         let order = await Manufacture.findByPk(order_id);
@@ -154,102 +154,102 @@ exports.deleteById = async (req, res) => {
 }
 
 
-
+ 
 exports.filteringByStatus = (req, res) => {
     let status = req.query.status;
+  
+      Orders.findAll({
+                        attributes: ['id', 'orderNo', 'orderDate', 'itemId', 'userId', 'status','quantity'],
+                        where: {status: status}
+                      })
+            .then(results => {
+              res.status(200).json({
+                  message: "Get all Orders with status = " + status,
+                  order: results,
+              });
+            })
+            . catch(error => {
+                console.log(error);
+                res.status(500).json({
+                  message: "Error!",
+                  error: error
+                });
+              });
+  }
+   
+  exports.pagination = (req, res) => {
+    try{
+      let page = parseInt(+req.params.page);
+      let limit = parseInt(req.query.limit);
+    
+    
+      const offset = page ? page * limit : 0;
+    
+      Orders.findAndCountAll({ limit: limit, offset:offset })
+        .then(data => {
+          const totalPages = Math.ceil(data.count / limit);
+          const response = {
+            message: "Paginating is completed! Query parameters: page = " + page + ", limit = " + limit,
+            data: {
+                "totalItems": data.count,
+                "totalPages": totalPages,
+                "limit": limit,
+                "currentPageNumber": page + 1,
+                "currentPageSize": data.rows.length,
+                "orders": data.rows
+            }
+          };
+          res.send(response);
+        });  
+    }catch(error) {
+      res.status(500).send({
+        message: "Error -> Can NOT complete a paging request!",
+        error: error.message,
+      });
+    }    
+  }
+  
+  exports.pagingfilteringsorting = (req, res) => {
+    try{
+      let page = parseInt(req.query.page);
+      let limit = parseInt(req.query.limit);
+      let status = (req.query.status === 'true');
+    
+      const offset = page ? page * limit : 0;
+  
+      console.log("offset = " + offset);
+    
+      Orders.findAndCountAll({
+                                  attributes: ['id', 'orderNo', 'orderDate', 'itemId', 'userId', 'status','quantity'],
+                                  where: {status: status}, 
+                                  order: [
+                                    ['orderNo', 'ASC'],
+                                    ['orderDate', 'DESC']
+                                  ],
+                                  limit: limit, 
+                                  offset:offset 
+                                })
+        .then(data => {
+          const totalPages = Math.ceil(data.count / limit);
+          const response = {
+            message: "Pagination Filtering Sorting request is completed! Query parameters: page = " + page + ", limit = " + limit + ", status = " + status,
+            data: {
 
-    Orders.findAll({
-        attributes: ['id', 'orderNo', 'orderDate', 'itemId', 'userId', 'status', 'quantity'],
-        where: { status: status }
-    })
-        .then(results => {
-            res.status(200).json({
-                message: "Get all Orders with status = " + status,
-                order: results,
-            });
-        })
-        .catch(error => {
-            console.log(error);
-            res.status(500).json({
-                message: "Error!",
-                error: error
-            });
-        });
-}
-
-exports.pagination = (req, res) => {
-    try {
-        let page = parseInt(+req.params.page);
-        let limit = parseInt(req.query.limit);
-
-
-        const offset = page ? page * limit : 0;
-
-        Orders.findAndCountAll({ limit: limit, offset: offset })
-            .then(data => {
-                const totalPages = Math.ceil(data.count / limit);
-                const response = {
-                    message: "Paginating is completed! Query parameters: page = " + page + ", limit = " + limit,
-                    data: {
-                        "totalItems": data.count,
-                        "totalPages": totalPages,
-                        "limit": limit,
-                        "currentPageNumber": page + 1,
-                        "currentPageSize": data.rows.length,
-                        "orders": data.rows
-                    }
-                };
-                res.send(response);
-            });
-    } catch (error) {
-        res.status(500).send({
-            message: "Error -> Can NOT complete a paging request!",
-            error: error.message,
-        });
-    }
-}
-
-exports.pagingfilteringsorting = (req, res) => {
-    try {
-        let page = parseInt(req.query.page);
-        let limit = parseInt(req.query.limit);
-        let status = (req.query.status === 'true');
-
-        const offset = page ? page * limit : 0;
-
-        console.log("offset = " + offset);
-
-        Orders.findAndCountAll({
-            attributes: ['id', 'orderNo', 'orderDate', 'itemId', 'userId', 'status', 'quantity'],
-            where: { status: status },
-            order: [
-                ['orderNo', 'ASC'],
-                ['orderDate', 'DESC']
-            ],
-            limit: limit,
-            offset: offset
-        })
-            .then(data => {
-                const totalPages = Math.ceil(data.count / limit);
-                const response = {
-                    message: "Pagination Filtering Sorting request is completed! Query parameters: page = " + page + ", limit = " + limit + ", status = " + status,
-                    data: {
-
-                        "totalItems": data.count,
-                        "totalPages": totalPages,
-                        "limit": limit,
-                        "status-filtering": status,
-                        "currentPageNumber": page + 1,
-                        "currentPageSize": data.rows.length,
-                        "orders": data.rows
-                    }
-                };
-                res.send(response);
-            });
-    } catch (error) {
-        res.status(500).send({
-            message: "Error -> Can NOT complete a paging request!",
-            error: error.message,
-        });
-    }
-}
+                "totalItems": data.count,
+                "totalPages": totalPages,
+                "limit": limit,
+                "status-filtering": status,
+                "currentPageNumber": page + 1,
+                "currentPageSize": data.rows.length,
+                "orders": data.rows
+            }
+          };
+          res.send(response);
+        });  
+    }catch(error) {
+      res.status(500).send({
+        message: "Error -> Can NOT complete a paging request!",
+        error: error.message,
+      });
+    }      
+  }

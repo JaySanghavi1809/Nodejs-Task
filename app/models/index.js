@@ -53,12 +53,8 @@ db.item.hasMany(db.order, {
 });
 
 db.user.hasMany(db.order, {
-  foreignKey: "id",
+  foreignKey: "userId",
 });
-
-
-
-
 
 //MANY - TO - MANY relationship:
 db.role.belongsToMany(db.user, {

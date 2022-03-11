@@ -1,7 +1,6 @@
 
 
 const db = require('../config/db.config.js');
-const { RolePermission } = require('../middleware/authJwt.js');
 const model = require('../models')
 const Item = model.item;
 const Orders = model.order
@@ -9,7 +8,6 @@ const Manufacture = model.manufacture
 
 exports.create = (req, res) => {
     let manufacture = {};
-    RolePermission(["Admin","Manufacture"])
 
     try {
         // Building Customer object from upoading request's body
@@ -33,12 +31,13 @@ exports.create = (req, res) => {
 }
 
 exports.retrieveAllManufacture = (req, res) => {
+    ProductInfo(["Manufacturer"])
     // find all Customer information from 
     Manufacture.findAll({
         include: [{
             model: Item
         }],
-        // where:{id:3}
+        
     })
         .then(manufacturerInfos => {
             res.status(200).json({
@@ -79,7 +78,6 @@ exports.getManufactureById = (req, res) => {
 }
 
 exports.updateById = async (req, res) => {
-    RolePermission(["Admin","Manufacture"]);
     try {
         let manufacture_Id = req.params.id;
         let manufacture = await Manufacture.findByPk(manufacture_Id);

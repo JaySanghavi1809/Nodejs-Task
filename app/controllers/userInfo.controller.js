@@ -9,7 +9,7 @@
    
    var jwt = require("jsonwebtoken");
    var bcrypt = require("bcryptjs");
-   
+const { authPage } = require("../middleware/authJwt");
    
 
 exports.create = (req, res) => {
@@ -48,9 +48,10 @@ exports.retrieveAllUser = (req, res) => {
     authPage(["Admin"])
     // find all Customer information from 
     User.findAll({
-        include: [{
-            model: Orders
-        }],
+        // include: [{
+        //     model: Orders
+        // }],
+        // where:{id:1}
     })
         .then(userInfos => {
             res.status(200).json({
