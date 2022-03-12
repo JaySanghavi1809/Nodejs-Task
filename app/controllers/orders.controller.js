@@ -70,11 +70,8 @@ exports.getOrderById = (req, res) => {
             });
         })
         .catch(error => {
-            // log on console
-            console.log(error);
-
             res.status(500).json({
-                message: "Error!",
+                message: "Something went wrong",
                 error: error
             });
         });
@@ -82,7 +79,8 @@ exports.getOrderById = (req, res) => {
 
 
 exports.updateById = async (req, res) => {
-    updateORDER(["Admin","Manufacture"]);
+    UpdateOrder(["Admin","Manufacturer"])
+    // UpdateOrderByCustomer(["Customer"])
     try {
         let order_id = req.params.id;
         let order = await Manufacture.findByPk(order_id);

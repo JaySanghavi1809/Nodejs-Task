@@ -29,10 +29,11 @@ module.exports = function (app) {
     app.get('/api/orders/pagefiltersort', OrderController.pagingfilteringsorting);
 
     app.put('/api/order/update/:id',
-        [
-            checkAuthMiddleware.authJwt.verifyToken,
-            checkAuthMiddleware.authJwt.updateORDER(["Admin","Manufacture"])
-        ]
+    [
+        checkAuthMiddleware.authJwt.verifyToken,
+        checkAuthMiddleware.authJwt.UpdateOrder(["Admin","Manufacturer"]),
+        // checkAuthMiddleware.authJwt.UpdateOrderByCustomer(["Customer"])
+    ]
         ,
         OrderController.updateById);
 

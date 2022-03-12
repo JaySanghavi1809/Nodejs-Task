@@ -210,7 +210,7 @@ ItemRecord = (permission)  => {
   }
 }
 
-updateORDER = (permission)  => {
+UpdateOrder = (permission)  => {
   return async(req,res,next)=>{
     const userId = req.userId
     console.log(userId)
@@ -219,12 +219,37 @@ updateORDER = (permission)  => {
 
     console.log(userDetails)
     if(permission.includes(userDetails.role)){
+      console.log(userDetails.role)
+
       next()
     }else {
       return res.status(401).json("You dont have permission")
     }
   }
 }
+
+UpdateOrder = (permission)  => {
+  return async(req,res,next)=>{
+    const userId = req.userId
+    console.log(userId)
+
+    var userDetails = await User.findOne({where: {id:userId} })
+
+    console.log(userDetails)
+    if(permission.includes(userDetails.role)){
+      console.log(userDetails.role)
+
+      next()
+    }else {
+      return res.status(401).json("You dont have permission")
+    }
+  }
+}
+
+
+
+
+
 
 DeleteItems = (destrory)  => {
   return async(req,res,next)=>{
@@ -265,10 +290,11 @@ const authJwt = {
   authPage:authPage,
   OrderPage:OrderPage,
   ownOrder:ownOrder,
+ 
   ProductInfo:ProductInfo,
   isAdmin: isAdmin,
   DeleteItems:DeleteItems,
-  updateORDER:updateORDER,
+  UpdateOrder:UpdateOrder,
   ItemRecord:ItemRecord,
   UpdateItem:UpdateItem,
   isManufacturer: isManufacturer,
