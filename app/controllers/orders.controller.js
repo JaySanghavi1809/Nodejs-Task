@@ -5,7 +5,9 @@ const Orders = model.order
 const Manufacture = model.manufacture
 
 exports.create = (req, res) => {
-    OrderPage(["Admin"])
+    // OrderPage(["Admin"])
+    // CreateOrder(["Customer"])
+    // ExpireDate(["Customer"])
     let order = {};
     try {
         // Building Customer object from upoading request's body
@@ -15,10 +17,10 @@ exports.create = (req, res) => {
             order.userId = req.body.userId,
             order.status = req.body.status,
             order.quantity = req.body.quantity,
-        console.log(order)
-
-
-            // Save to MySQL database
+             console.log(order)
+             
+             // Save to MySQL database
+            
             Orders.create(order).then(result => {
                 // send uploading message to client
                 res.status(200).json({
@@ -26,9 +28,12 @@ exports.create = (req, res) => {
                     order: result,
                 });
             });
+        
+            
+        
     } catch (error) {
         res.status(500).json({
-            message: "Fail!",
+            message: "Not upload order !",
             error: error.message
         });
     }
@@ -59,7 +64,7 @@ exports.retrieveAllOrder = (req, res) => {
         });
 }
 
-exports.getOrderById = (req, res) => {
+exports.get_Order_DetailsById = (req, res) => {
     // find all Customer information from 
     let order_id = req.params.id;
     Orders.findByPk(order_id)
@@ -83,7 +88,7 @@ exports.updateById = async (req, res) => {
     // UpdateOrderByCustomer(["Customer"])
     try {
         let order_id = req.params.id;
-        let order = await Manufacture.findByPk(order_id);
+        let order = await Orders.findByPk(order_id);
 
         if (!order) {
             // return a response to client
@@ -129,7 +134,7 @@ exports.updateById = async (req, res) => {
 exports.deleteById = async (req, res) => {
     try {
         let order_id = req.params.id;
-        let order = await O.findByPk(order_id);
+        let order = await Orders.findByPk(order_id);
 
         if (!order) {
             res.status(404).json({

@@ -15,8 +15,8 @@ module.exports = function (app) {
 
     app.get('/api/items/all', 
     [
-        checkAuthMiddleware.authJwt.verifyToken,
-        checkAuthMiddleware.authJwt.ProductInfo(["Manufacturer"])
+        // checkAuthMiddleware.authJwt.verifyToken,
+        // checkAuthMiddleware.authJwt.ProductInfo(["Manufacturer"])
     ],
     
     ItemController.retrieveAllItems);

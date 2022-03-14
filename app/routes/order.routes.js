@@ -8,7 +8,8 @@ module.exports = function (app) {
     app.post("/api/orders/create",
         [
             checkAuthMiddleware.authJwt.verifyToken,
-            // checkAuthMiddleware.authJwt.ItemDate(["Customer"]),
+            // checkAuthMiddleware.authJwt.ExpireDate(["Customer"]),
+            //  checkAuthMiddleware.authJwt.CreateOrder(["Customer"]),
         ]
         ,
         OrderController.create);
@@ -20,7 +21,7 @@ module.exports = function (app) {
     ],
     OrderController.retrieveAllOrder);
 
-    app.get('/api/orders/onebyid/:id', OrderController.getOrderById);
+    app.get('/api/orders/onebyid/:id', OrderController.get_Order_DetailsById);
 
     app.get('/api/orders/filteringBystatus', OrderController.filteringByStatus);
 

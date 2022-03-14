@@ -4,6 +4,9 @@
    const config = require("../config/auth.config");
    const User = db.user;
    const Orders = db.order
+   const sequelize = require('sequelize')
+   let startDate,endDate;
+   
    
    const Op = db.Sequelize.Op;
    
@@ -48,10 +51,25 @@ exports.retrieveAllUser = (req, res) => {
     authPage(["Admin"])
     // find all Customer information from 
     User.findAll({
-        // include: [{
-        //     model: Orders
-        // }],
-        // where:{id:1}
+        attributes: { 
+            include: [[sequelize.fn("COUNT", sequelize.col("orders.id")), "totalOrders"]],
+            createdAt: {
+                $between: [new Date(Date(startDate)), new Date(Date(endDate))],
+            }
+          
+        },
+        logging: console.log,
+        raw: true,
+        order: [['createdAt', 'DESC']],
+        include: [{
+            model: Orders, 
+            attributes: []
+        }],
+        group: ["User.id"]
+
+
+       
+             
     })
         .then(userInfos => {
             res.status(200).json({

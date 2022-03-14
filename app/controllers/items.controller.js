@@ -11,35 +11,37 @@ const Manufacture = model.manufacture
 
 exports.pagination = (req, res) => {
   try {
-    let page = req.params.page;
-    let limit = req.query.limit;
+    let page = parseInt(req.query.page);
+    let limit = parseInt(req.query.limit);
+  
 
-    const offset = page ? page * limit : 0;
+   const offset = page ? page * limit : 10;
+  
 
-    Item.findAndCountAll({ limit: limit, offset: offset })
+    Item.findAndCountAll({ limit: limit, offset:offset })
       .then(data => {
         const totalPages = Math.ceil(data.count / limit);
         const response = {
           message: "Paginating is completed! Query parameters: page = " + page + ", limit = " + limit,
-          data: {
-            "totalItems": data.count,
-            "totalPages": totalPages,
-            "limit": limit,
-            "currentPageNumber": page + 1,
-            "currentPageSize": data.rows.length,
-            "items": data.rows
+        data: {
+              "totalItems": data.count,
+              "totalPages": totalPages,
+              "limit": limit,
+              "currentPageNumber": page + 1,
+              "currentPageSize": data.rows.length,
+              "items": data.rows
+              
           }
         };
         res.send(response);
-      });
-  } catch (error) {
+      });  
+  }catch(error) {
     res.status(500).send({
       message: "Error -> Can NOT complete a paging request!",
       error: error.message,
     });
-  }
+  }    
 }
-
 exports.filteringByPrice = (req, res) => {
   let price = req.query.price;
 
@@ -67,11 +69,11 @@ exports.filteringByPrice = (req, res) => {
 
 exports.pagingfilteringsorting = (req, res) => {
   try {
-    let page = req.params.page;
-    let limit = req.query.limit;
-    let price = req.query.price;
-
-    const offset = page ? page * limit : 0;
+   let page = parseInt(req.query.page);
+    let limit = parseInt(req.query.limit);
+    let price = parseInt(req.query.price);
+  
+    const offset = page ? page * limit : 10;
 
     console.log("offset = " + offset);
 
@@ -82,37 +84,35 @@ exports.pagingfilteringsorting = (req, res) => {
         ['itemName', 'ASC'],
         ['itemType', 'DESC']
       ],
-      limit: limit,
-      offset: offset
+     limit: limit, 
+     offset:offset 
     })
-      .then(data => {
+       .then(data => {
         const totalPages = Math.ceil(data.count / limit);
         const response = {
           message: "Pagination Filtering Sorting request is completed! Query parameters: page = " + page + ", limit = " + limit + ", price = " + price,
           data: {
-            "copyrightby": "https://loizenai.com",
-            "totalItems": data.count,
-            "totalPages": totalPages,
-            "limit": limit,
-            "price-filtering": price,
-            "currentPageNumber": page + 1,
-            "currentPageSize": data.rows.length,
-            "items": data.rows
+              "totalItems": data.count,
+              "totalPages": totalPages,
+              "limit": limit,
+              "price-filtering": price,
+              "currentPageNumber": page + 1,
+              "currentPageSize": data.rows.length,
+              "items": data.rows
           }
         };
         res.send(response);
-      });
-  } catch (error) {
+      });  
+  }catch(error) {
     res.status(500).send({
       message: "Error -> Can NOT complete a paging request!",
       error: error.message,
     });
-  }
+  }      
 }
 
-
 exports.create = (req, res) => {
-  // ItemRecord(["Admin","Manufacturer"])
+  ItemRecord(["Admin","Manufacturer"])
   let item = {};
 
 
@@ -147,9 +147,14 @@ exports.retrieveAllItems = async (req, res) => {
 
   // find all Item information from 
   await Item.findAll({
+    order: [
+      ['expiryDate', 'ASC'],
+      // ['itemName', 'DESC'],
+      // ['itemType', 'ASC'],
+  ],
     // include: [{
     //   model: Orders,
-    //   where: { id: 1 }
+    //   // where: { id: 1 }
     // }],
     
   })
