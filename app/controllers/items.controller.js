@@ -5,6 +5,7 @@
 
 const db = require('../config/db.config.js');
 const model = require('../models')
+const order = require('../models/order.js');
 const Item = model.item;
 const Orders = model.order
 const Manufacture = model.manufacture
@@ -13,34 +14,34 @@ exports.pagination = (req, res) => {
   try {
     let page = parseInt(req.query.page);
     let limit = parseInt(req.query.limit);
-  
 
-   const offset = page ? page * limit : 10;
-  
 
-    Item.findAndCountAll({ limit: limit, offset:offset })
+    const offset = page ? page * limit : 10;
+
+
+    Item.findAndCountAll({ limit: limit, offset: offset })
       .then(data => {
         const totalPages = Math.ceil(data.count / limit);
         const response = {
           message: "Paginating is completed! Query parameters: page = " + page + ", limit = " + limit,
-        data: {
-              "totalItems": data.count,
-              "totalPages": totalPages,
-              "limit": limit,
-              "currentPageNumber": page + 1,
-              "currentPageSize": data.rows.length,
-              "items": data.rows
-              
+          data: {
+            "totalItems": data.count,
+            "totalPages": totalPages,
+            "limit": limit,
+            "currentPageNumber": page + 1,
+            "currentPageSize": data.rows.length,
+            "items": data.rows
+
           }
         };
         res.send(response);
-      });  
-  }catch(error) {
+      });
+  } catch (error) {
     res.status(500).send({
       message: "Error -> Can NOT complete a paging request!",
       error: error.message,
     });
-  }    
+  }
 }
 exports.filteringByPrice = (req, res) => {
   let price = req.query.price;
@@ -69,10 +70,10 @@ exports.filteringByPrice = (req, res) => {
 
 exports.pagingfilteringsorting = (req, res) => {
   try {
-   let page = parseInt(req.query.page);
+    let page = parseInt(req.query.page);
     let limit = parseInt(req.query.limit);
     let price = parseInt(req.query.price);
-  
+
     const offset = page ? page * limit : 10;
 
     console.log("offset = " + offset);
@@ -84,35 +85,35 @@ exports.pagingfilteringsorting = (req, res) => {
         ['itemName', 'ASC'],
         ['itemType', 'DESC']
       ],
-     limit: limit, 
-     offset:offset 
+      limit: limit,
+      offset: offset
     })
-       .then(data => {
+      .then(data => {
         const totalPages = Math.ceil(data.count / limit);
         const response = {
           message: "Pagination Filtering Sorting request is completed! Query parameters: page = " + page + ", limit = " + limit + ", price = " + price,
           data: {
-              "totalItems": data.count,
-              "totalPages": totalPages,
-              "limit": limit,
-              "price-filtering": price,
-              "currentPageNumber": page + 1,
-              "currentPageSize": data.rows.length,
-              "items": data.rows
+            "totalItems": data.count,
+            "totalPages": totalPages,
+            "limit": limit,
+            "price-filtering": price,
+            "currentPageNumber": page + 1,
+            "currentPageSize": data.rows.length,
+            "items": data.rows
           }
         };
         res.send(response);
-      });  
-  }catch(error) {
+      });
+  } catch (error) {
     res.status(500).send({
       message: "Error -> Can NOT complete a paging request!",
       error: error.message,
     });
-  }      
+  }
 }
 
 exports.create = (req, res) => {
-  ItemRecord(["Admin","Manufacturer"])
+  ItemRecord(["Admin", "Manufacturer"])
   let item = {};
 
 
@@ -143,7 +144,7 @@ exports.create = (req, res) => {
 }
 
 exports.retrieveAllItems = async (req, res) => {
-   ProductInfo(["Manufacturer"])
+  ProductInfo(["Manufacturer"])
 
   // find all Item information from 
   await Item.findAll({
@@ -151,12 +152,12 @@ exports.retrieveAllItems = async (req, res) => {
       ['expiryDate', 'ASC'],
       // ['itemName', 'DESC'],
       // ['itemType', 'ASC'],
-  ],
-    // include: [{
-    //   model: Orders,
-    //   // where: { id: 1 }
-    // }],
-    
+    ],
+    include: [{
+      model: Orders,
+      // where: { id: 1 }
+    }],
+
   })
     .then(iteminfo => {
       res.status(200).json({
@@ -174,6 +175,7 @@ exports.retrieveAllItems = async (req, res) => {
       });
     });
 }
+
 
 exports.getItemById = (req, res) => {
   // find all Item information from 
@@ -197,7 +199,7 @@ exports.getItemById = (req, res) => {
 }
 
 exports.updateById = async (req, res) => {
-  UpdateItem(["Admin","Manufacturer"])
+  UpdateItem(["Admin", "Manufacturer"])
   try {
     let itemId = req.params.id;
     let item = await Item.findByPk(itemId);
@@ -248,13 +250,19 @@ exports.deleteById = async (req, res) => {
   try {
     let itemId = req.params.id;
     let item = await Item.findByPk(itemId);
+    let orderId = req.params.id;
+    let order = await Orders.findByPk(orderId)
 
     if (!item) {
       res.status(404).json({
         message: "Does Not exist a Item with id = " + itemId,
         error: "404",
       });
-    } else {
+    }
+   
+    
+    
+    else {
       await item.destroy();
       res.status(200).json({
         message: "Delete Successfully a Item with id = " + itemId,
@@ -268,5 +276,7 @@ exports.deleteById = async (req, res) => {
     });
   }
 }
+
+
 
 

@@ -40,6 +40,10 @@ db.order.belongsTo(db.item, {
   as: "item",
 });
 
+
+
+
+
 db.manufacture.belongsTo(db.user, {
   foreignKey: "userId",
   as: "user",
@@ -49,8 +53,10 @@ db.manufacture.hasMany(db.item, {
 });
 
 db.item.hasMany(db.order, {
-  foreignKey: "userId",
+  foreignKey: "itemId",
 });
+
+
 
 db.user.hasMany(db.order, {
   foreignKey: "userId",

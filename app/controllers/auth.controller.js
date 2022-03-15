@@ -1,5 +1,8 @@
 const db = require("../models");
-const config = require("../config/auth.config");
+const { generateOtp } = require("../helpers/util")
+const { sendMail, OtpMail } = require("../helpers/email.helper")
+const OTP_EXPIRE_TIME = process.env.OTP_EXPIRE_TIME;
+const moment = require('moment');
 const User = db.user;
 const Role = db.role;
 const Order= db.order
@@ -8,6 +11,7 @@ const Op = db.Sequelize.Op;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+var otp = generateOtp(4);
 
 exports.signup = (req, res) => {
   // Save User to Database
@@ -19,9 +23,18 @@ exports.signup = (req, res) => {
     role: req.body.role,
     status: req.body.status,
     isVerify: req.body.isVerify,
-    otp: req.body.otp,
-    expiryOtpTime: req.body.expiryOtpTime,
+    otp: otp,
+    otp_exp_time: moment(new Date()).add(OTP_EXPIRE_TIME, 'seconds').format('YYYY-MM-DD HH:mm:ss'),
+    type: 0
   })
+
+  sendMail(
+    to = body.email,
+    subject = 'Welcome to Verification',
+    template = OtpMail({ otp: otp })
+)
+
+
     .then(user => {
       if (req.body.roles) {
         Role.findAll({
@@ -46,6 +59,71 @@ exports.signup = (req, res) => {
       res.status(500).send({ message: err.message });
     });
 };
+
+exports.verifyOtp = async (req, res) => {
+
+  try {
+
+      let body = req.body;
+
+      // finding user with email
+      var emailcheck = await User.findOne({ where: { type: 'email', data: body.email } })
+      if (!emailcheck) {
+          return res.status(400).send({ status: false, message: res.__('ERROR_EMAIL_NOT_EXIST') })
+      }
+
+      // checking valid user data
+      var EMAILCHECK = await OauthUser.findOne({ where: { id: EMAILCHECK.user_id } })
+      if (!EMAILCHECK) {
+          return res.status(400).send({ status: false, message: res.__('ERROR_USER_NOT_FOUND') })
+      }
+
+      // checking user status
+      var UserData = await User.findOne({ where: { user_id: EMAILCHECK.user_id } })
+      if (body.type == 'Signup' && UserData.status === 'active') {
+          return res.status(400).send({ status: false, message: res.__('ERROR_USER_ALREADY_VERIFY') })
+      }
+
+      if (UserData.otp != body.otp) {
+          return res.status(400).send({ status: false, message: res.__('ERROR_INVALID_OTP') })
+      }
+
+      if (moment(UserData.otp_exp_time) < moment(new Date())) {
+          return res.status(400).send({ status: false, message: res.__('ERROR_OTP_EXPIRED') })
+      }
+
+      // Update user status
+      var UserUpdateData = User.update({ otp: null, otp_exp_time: null, status: 'active' }, { where: { user_id: EMAILCHECK.user_id } });
+
+      // generating token
+      const token = generateToken({ id: OauthUserData.id, email: body.email })
+      let user_meta = await UserMeta.findOne({ attributes: ['type', 'data'], where: { user_id: EMAILCHECK.id, type: 'URI' } });
+      if (!user_meta) {
+          var UserMetaCreate = {
+              user_id: EMAILCHECK.id,
+              type: 'URI',
+              data: EMAILCHECK.id
+          }
+          user_meta = await UserMeta.create(UserMetaCreate);
+      }
+      var responseData = {
+          user_id: EMAILCHECK.id,
+          email: body.email,
+          token: token,
+          user_meta: user_meta ? user_meta : {}
+      }
+
+      res.status(200).send({ status: true, message: res.__('SUCCESS_REGISTERED'), data: responseData })
+      logger.info({ message: res.__('SUCCESS_REGISTERED'), responseData })
+
+  } catch (e) {
+      console.log(e)
+      res.send({ status: false, message: e.message })
+      logger.error(e.message)
+  }
+}
+
+
 
 exports.signin = (req, res) => {
   User.findOne({

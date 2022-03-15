@@ -2,10 +2,6 @@
 // const ItemController = require('../controllers/items.controller')
 const jwt = require("jsonwebtoken");
 const { DataTypes } = require("sequelize");
-
-
-
-
 const config = require("../config/auth.config.js");
 // const { order } = require("../models");
 const db = require("../models");
@@ -14,10 +10,6 @@ const User = db.user;
 const Item = db.item;
 const Role = db.role;
 const Orders  = db.order;
-
-
-
-
 const Manufacturer = db.manufacture;
 
 verifyToken = (req, res, next) => {
@@ -57,8 +49,6 @@ isCustomer = (req, res, next) => {
     });
   });
 };
-
-
 
 isAdmin = (req, res, next) => {
   User.findByPk(req.userId).then(user => {
@@ -267,6 +257,7 @@ ExpireDate = (expireDate)  => {
 DeleteItems = (destrory) => {
   return async (req, res, next) => {
     const userId = req.userId
+    
     console.log(userId)
 
     var userDetails = await User.findOne({ where: { id: userId } })
@@ -295,6 +286,8 @@ UpdateItem = (permission) => {
     }
   }
 }
+
+
 
 
 

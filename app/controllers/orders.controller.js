@@ -41,6 +41,7 @@ exports.create = (req, res) => {
 
 exports.retrieveAllOrder = (req, res) => {
     // ItemDate(["Customer"]),
+    OrderPage(["Admin"])
     // find all Customer information from 
     Orders.findAll({
         includes:[{
