@@ -32,6 +32,7 @@ require("./app/routes/order.routes")(app);
 require("./app/routes/image.routes")(app);
 require("./app/routes/userInfo.routes")(app);
 require("./app/routes/viewMyOrders.routes")(app);
+require("./app/routes/OrderStatus.routes")(app);
 
 
 

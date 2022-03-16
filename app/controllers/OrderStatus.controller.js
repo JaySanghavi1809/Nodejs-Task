@@ -6,24 +6,27 @@ const Orders = model.order
 const Manufacture = model.manufacture
 
 exports.create = (req, res) => {
-    let order = {};
+    let orderstatus = {};
 
     try {
         // Building Customer object from upoading request's body
-        order.orderNo = req.body.orderNo,
-            order.orderDate = req.body.orderDate,
-            order.itemId = req.body.itemId,
-            order.userId = req.body.userId,
-            order.status = req.body.status,
-            order.quantity = req.body.quantity,
+        orderstatus.orderNo = req.body.orderNo,
+        orderstatus.orderDate = req.body.orderDate,
+        orderstatus.itemId = req.body.itemId,
+        orderstatus.userId = req.body.userId,
+        orderstatus.status = helpers.NumberGen(length),
+        orderstatus.quantity = req.body.quantity,
+        console.log(helpers.NumberGen(length))
 
 
             // Save to MySQL database
-            Orders.create(order).then(result => {
+            Orders.create(orderstatus).then(result => {
+               var status = helpers.NumberGen(length)
+               console.log(status)
                 // send uploading message to client
                 res.status(200).json({
                     message: "Upload Successfully a order with id = " + result.id,
-                    order: result,
+                    orderstatus: result,
                 });
             });
     } catch (error) {
@@ -35,9 +38,9 @@ exports.create = (req, res) => {
 }
 
 exports.retrieveAllOrder = (req, res) => {
-    // ItemDate(["Customer"]),
-    OrderPage(["Admin"])
-    // find all Customer information from 
+    // // ItemDate(["Customer"]),
+    // OrderPage(["Admin"])
+    // // find all Customer information from 
     Orders.findAll({
         includes:[{
             model:Item
@@ -46,11 +49,11 @@ exports.retrieveAllOrder = (req, res) => {
         .then(ordersInfos => {
             res.status(200).json({
                 message: "Get all Order' Infos Successfully!",
-                orders: ordersInfos
+                orderstatus: ordersInfos
             });
         })
         .catch(error => {
-            // log on console
+        
             console.log(error);
 
             res.status(500).json({
@@ -61,13 +64,13 @@ exports.retrieveAllOrder = (req, res) => {
 }
 
 exports.get_Order_DetailsById = (req, res) => {
-    // find all Customer information from 
+    
     let order_id = req.params.id;
     Orders.findByPk(order_id)
         .then(order => {
             res.status(200).json({
                 message: " Successfully Get a Order with id = " + order_id,
-                orders: order
+                orderstatus: orderstatus
             });
         })
         .catch(error => {
@@ -80,17 +83,17 @@ exports.get_Order_DetailsById = (req, res) => {
 
 
 exports.updateById = async (req, res) => {
-    UpdateOrder(["Admin","Manufacturer"])
-    UpdateOrderByCustomer(["Customer"])
+    // UpdateOrder(["Admin","Manufacturer"])
+  
     try {
         let order_id = req.params.id;
-        let order = await Orders.findByPk(order_id);
+        let orderstatus = await Orders.findByPk(order_id);
 
-        if (!order) {
+        if (!orderstatus) {
             // return a response to client
             res.status(404).json({
                 message: "Not Found for updating a Order with id = " + order_id,
-                order: "",
+                orderstatus: "",
                 error: "404"
             });
         } else {
@@ -106,7 +109,7 @@ exports.updateById = async (req, res) => {
             }
             let result = await Orders.update(updatedObject, { returning: true, where: { id: order_id } });
 
-            // return the response to client
+            
             if (!result) {
                 res.status(500).json({
                     message: "Error -> Can not update a Orders with id = " + req.params.id,
@@ -116,7 +119,7 @@ exports.updateById = async (req, res) => {
 
             res.status(200).json({
                 message: "Update successfully a Manufacture with id = " + order_id,
-                order: updatedObject,
+                orderstatus: updatedObject,
             });
         }
     } catch (error) {
@@ -130,18 +133,18 @@ exports.updateById = async (req, res) => {
 exports.deleteById = async (req, res) => {
     try {
         let order_id = req.params.id;
-        let order = await Orders.findByPk(order_id);
+        let orderstatus = await Orders.findByPk(order_id);
 
-        if (!order) {
+        if (!orderstatus) {
             res.status(404).json({
                 message: "Does Not exist a Manufacture with id = " + order_id,
                 error: "404",
             });
         } else {
-            await order.destroy();
+            await orderstatus.destroy();
             res.status(200).json({
                 message: "Delete Successfully a order with id = " + order_id,
-                order: order,
+                orderstatus: orderstatus,
             });
         }
     } catch (error) {
@@ -164,7 +167,7 @@ exports.filteringByStatus = (req, res) => {
             .then(results => {
               res.status(200).json({
                   message: "Get all Orders with status = " + status,
-                  order: results,
+                  orderstatus: results,
               });
             })
             . catch(error => {
@@ -195,7 +198,7 @@ exports.filteringByStatus = (req, res) => {
                 "limit": limit,
                 "currentPageNumber": page + 1,
                 "currentPageSize": data.rows.length,
-                "orders": data.rows
+                "orderstatus": data.rows
             }
           };
           res.send(response);
@@ -221,7 +224,7 @@ exports.filteringByStatus = (req, res) => {
       Orders.findAndCountAll({
                                   attributes: ['id', 'orderNo', 'orderDate', 'itemId', 'userId', 'status','quantity'],
                                   where: {status: status}, 
-                                  order: [
+                                  orderstatus: [
                                     ['orderNo', 'ASC'],
                                     ['orderDate', 'DESC']
                                   ],
@@ -240,7 +243,7 @@ exports.filteringByStatus = (req, res) => {
                 "status-filtering": status,
                 "currentPageNumber": page + 1,
                 "currentPageSize": data.rows.length,
-                "orders": data.rows
+                "orderstatus": data.rows
             }
           };
           res.send(response);
@@ -252,9 +255,3 @@ exports.filteringByStatus = (req, res) => {
       });
     }      
   }
-
-  
-
-
-
- 

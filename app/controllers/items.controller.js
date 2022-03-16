@@ -128,20 +128,35 @@ exports.create = (req, res) => {
     item.image = req.body.image;
 
     // Save to MySQL database
-    Item.create(item).then(result => {
-      // send uploading message to client
-      res.status(200).json({
-        message: "Upload Successfully a Item with id = " + result.id,
-        item: result,
-      });
-    });
+    Item.findByPk(req.body.id).then(result => {
+      if (item.expiryDate) {
+        item = Item.findOne({
+          where: { id: item.expiryDate},
+          raw: true
+        });
+        res.status(500).json({
+          message: "order can't created "
+        });
+      } else {
+        Item.create(item).then(result => {
+
+          // send uploading message to client
+          res.status(200).json({
+            message: "Upload Successfully a Item with id = " + result.id,
+            item: result,
+          });
+        });
+
+      }
+    })
   } catch (error) {
     res.status(500).json({
-      message: "Fail!",
+      message: "Not upload order !",
       error: error.message
     });
   }
 }
+
 
 exports.retrieveAllItems = async (req, res) => {
   ProductInfo(["Manufacturer"])
@@ -259,9 +274,9 @@ exports.deleteById = async (req, res) => {
         error: "404",
       });
     }
-   
-    
-    
+
+
+
     else {
       await item.destroy();
       res.status(200).json({
@@ -276,7 +291,5 @@ exports.deleteById = async (req, res) => {
     });
   }
 }
-
-
 
 

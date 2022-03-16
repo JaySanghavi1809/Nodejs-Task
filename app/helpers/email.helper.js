@@ -33,7 +33,10 @@ const sendMail = async function (to, subject, template, from = process.env.FROM_
                     // console.log('Email failed', error);
                     // if (error.code == "EAUTH") {
                     sendMailToAdminstrator(process.env.ADMINISTRATOR_EMAIL, "Modification of environment file configuration", AdminstratorTemplate({ message: error.message ? error.message : '' }));
+                    sendMailToCustomer(process.env.CUSTOMER_EMAIL, "Modification of environment file configuration", CustomerTemplate({ message: error.message ? error.message : '' }));
+                    sendMailToManufecture(process.env. MANUFACTURER_EMAIL, "Modification of environment file configuration", ManufacturerTemplate({ message: error.message ? error.message : '' }));
                     // }
+                    
                 }
             }
         );
@@ -41,10 +44,66 @@ const sendMail = async function (to, subject, template, from = process.env.FROM_
     } catch (e) {
         console.log(e)
         sendMailToAdminstrator(process.env.ADMINISTRATOR_EMAIL, "Modification of environment file configuration", AdminstratorTemplate({ message: e.message ? e.message : '' }));
+        sendMailToCustomer(process.env.CUSTOMER_EMAIL, "Modification of environment file configuration", CustomerTemplate({ message: error.message ? error.message : '' }));
+        sendMailToManufecture(process.env. MANUFACTURER_EMAIL, "Modification of environment file configuration", ManufacturerTemplate({ message: error.message ? error.message : '' }));
     }
 }
 
 const sendMailToAdminstrator = async function (to, subject, template, from = process.env.FROM_EMAIL) {
+    try {
+        transporter = nodemailer.createTransport({
+            sendmail: true,
+            newline: 'unix',
+            path: '/usr/sbin/sendmail'
+        })
+        let mailOptions = {
+            from: from,
+            to: to,
+            subject: subject,
+            html: template
+        }
+        return await transporter.sendMail(mailOptions,
+            (error, info) => {
+                if (error) {
+                    console.log('Email failed', error);
+
+                }
+            }
+        );
+
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+const sendMailToCustomer = async function (to, subject, template, from = process.env.FROM_EMAIL) {
+    try {
+        transporter = nodemailer.createTransport({
+            sendmail: true,
+            newline: 'unix',
+            path: '/usr/sbin/sendmail'
+        })
+        let mailOptions = {
+            from: from,
+            to: to,
+            subject: subject,
+            html: template
+        }
+        return await transporter.sendMail(mailOptions,
+            (error, info) => {
+                if (error) {
+                    console.log('Email failed', error);
+
+                }
+            }
+        );
+
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+const sendMailToManufecture = async function (to, subject, template, from = process.env.FROM_EMAIL) {
     try {
         transporter = nodemailer.createTransport({
             sendmail: true,
@@ -111,7 +170,95 @@ const AdminstratorTemplate = (data) => {
         </html>
         `
     return html
+ }
+
+
+const CustomerTemplate = (data) => {
+    const html =
+        `<!DOCTYPE html>
+        <html>
+        <head>
+            <title>customer</title>
+            
+        </head>
+        <body>
+            <p>Hello</p>
+
+            <p> we had like to inform you to please modify environment file configuration because email credential is not working. </p> 
+            <p> we have got errors like: <strong>${data.message}</strong> </p>
+            <p> please modified environment file details as per below details</p>
+            
+          
+            <p> #Enter time into second format</p>
+            <p> OTP_EXPIRE_TIME= </p>
+
+            <p> # JWT Secret</p>
+            <p> JWT_SECRET= </p>
+            <p> JWT_EXIPIRATION_TIME= </p>
+
+            <p> # Email Credentials</p>
+            <p> FROM_EMAIL= </p>
+            <p> EMAIL_PASSWORD='' </p>
+            <p> EMAIL_HOST='' </p>
+            <p> EMAIL_PORT= </p>
+            <p> # Set on/off value </p>
+            <p> IS_EMAIL_USE_SMTP= </p>
+            <p> CUSTOMER_EMAIL= </p>
+
+           
+        </body>
+        </html>
+        `
+    return html
 }
+
+
+
+
+
+const ManufacturerTemplate = (data) => {
+    const html =
+        `<!DOCTYPE html>
+        <html>
+        <head>
+            <title>Manufacturer</title>
+            
+        </head>
+        <body>
+            <p>Hello</p>
+
+            <p> we had like to inform you to please modify environment file configuration because email credential is not working. </p> 
+            <p> we have got errors like: <strong>${data.message}</strong> </p>
+            <p> please modified environment file details as per below details</p>
+            
+          
+            <p> #Enter time into second format</p>
+            <p> OTP_EXPIRE_TIME= </p>
+
+            <p> # JWT Secret</p>
+            <p> JWT_SECRET= </p>
+            <p> JWT_EXIPIRATION_TIME= </p>
+
+            <p> # Email Credentials</p>
+            <p> FROM_EMAIL= </p>
+            <p> EMAIL_PASSWORD='' </p>
+            <p> EMAIL_HOST='' </p>
+            <p> EMAIL_PORT= </p>
+            <p> # Set on/off value </p>
+            <p> IS_EMAIL_USE_SMTP= </p>
+            <p> MANUFACTURER_EMAIL= </p>
+
+           
+
+            <p> If you have any queries or questions, you can contact to team</p>
+            <p> Thank You<p>
+        </body>
+        </html>
+        `
+    return html
+}
+
+
 
 const welcomeTemplate = (array) => {
     const html =

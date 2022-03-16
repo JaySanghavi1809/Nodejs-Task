@@ -1,4 +1,4 @@
-const OrderController = require("../controllers/orders.controller");
+const OrderStatusController = require("../controllers/OrderStatus.controller");
 const checkAuthMiddleware = require('../middleware');
 
 module.exports = function (app) {
@@ -12,24 +12,22 @@ module.exports = function (app) {
             //  checkAuthMiddleware.authJwt.CreateOrder(["Customer"]),
         ]
         ,
-        OrderController.create);
+        OrderStatusController.create);
     app.get('/api/orders/all',
     [
         checkAuthMiddleware.authJwt.verifyToken,
         checkAuthMiddleware.authJwt.OrderPage(["Admin"]),
         
     ],
-    OrderController.retrieveAllOrder);
+    OrderStatusController.retrieveAllOrder);
 
-    app.get('/api/orders/onebyid/:id', OrderController.get_Order_DetailsById);
+    app.get('/api/orders/onebyid/:id', OrderStatusController.get_Order_DetailsById);
 
-    app.get('/api/orders/filteringBystatus', OrderController.filteringByStatus);
+    app.get('/api/orders/filteringBystatus', OrderStatusController.filteringByStatus);
 
-    app.get('/api/orders/pagination', OrderController.pagination);
+    app.get('/api/orders/pagination', OrderStatusController.pagination);
 
-    app.get('/api/orders/pagefiltersort', OrderController.pagingfilteringsorting);
-
-    // app.get('/api/orders/random', OrderController.random);
+    app.get('/api/orders/pagefiltersort', OrderStatusController.pagingfilteringsorting);
 
     app.put('/api/order/update/:id',
     [
@@ -38,14 +36,14 @@ module.exports = function (app) {
         checkAuthMiddleware.authJwt.UpdateOrderByCustomer(["Customer"])
     ]
         ,
-        OrderController.updateById);
+        OrderStatusController.updateById);
 
     app.delete('/api/order/delete/:id',
         [
             checkAuthMiddleware.authJwt.verifyToken
         ]
         ,
-        OrderController.deleteById);
+        OrderStatusController.deleteById);
 
 };
 
