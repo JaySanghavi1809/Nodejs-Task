@@ -29,16 +29,29 @@ module.exports = function (app) {
 
     app.get('/api/orders/pagefiltersort', OrderController.pagingfilteringsorting);
 
-    // app.get('/api/orders/random', OrderController.random);
+    // app.get('/api/orders/random', OrderController.NumberGen);
 
     app.put('/api/order/update/:id',
     [
         checkAuthMiddleware.authJwt.verifyToken,
-        checkAuthMiddleware.authJwt.UpdateOrder(["Admin","Manufacturer"]),
-        checkAuthMiddleware.authJwt.UpdateOrderByCustomer(["Customer"])
+        // checkAuthMiddleware.authJwt.UpdateOrder(["Admin","Manufacturer"]),
+        // checkAuthMiddleware.authJwt.UpdateOrderByCustomer(["Customer"])
     ]
         ,
         OrderController.updateById);
+
+        app.put('/api/order/updateStatus/:id',
+        [
+            checkAuthMiddleware.authJwt.verifyToken,
+            // checkAuthMiddleware.authJwt.UpdateOrder(["Admin","Manufacturer"]),
+            // OrderController.Updateinfo(["Customer"])
+            
+        ]
+            ,
+            OrderController.UpdateOrderStatus);
+        
+
+
 
     app.delete('/api/order/delete/:id',
         [

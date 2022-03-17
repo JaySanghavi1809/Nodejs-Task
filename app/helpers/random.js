@@ -1,6 +1,6 @@
 const db = require('../config/db.config')
 const model = require('../models')
-const OrderStatusController = require('../controllers/OrderStatus.controller')
+const OrderStatusController = require('../controllers/orders.controller')
 
 exports.NumberGen = (len) => {
     var text = "";

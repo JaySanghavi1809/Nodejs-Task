@@ -287,23 +287,23 @@ UpdateItem = (permission) => {
   }
 }
 
-UpdateOrderByCustomer = (permission) => {
-  return async (req, res, next) => {
-    const userId = req.userId
-    console.log(userId)
+// Updatestatus = (permission) => {
+//   return async (req, res, next) => {
+//     const userId = req.userId
+//     console.log(userId)
 
-    var userDetails = await User.findOne({ where: { id: userId } })
+//     var userDetails = await User.findOne({ where: { id: userId } })
 
-    console.log(userDetails)
-    if (permission.includes(userDetails.role)) {
-      console.log(userDetails.role)
+//     console.log(userDetails)
+//     if (permission.includes(userDetails.role)) {
+//       console.log(userDetails.role)
 
-      next()
-    } else {
-      return res.status(401).json("You dont have permission")
-    }
-  }
-}
+//       next()
+//     } else {
+//       return res.status(401).json("You dont have permission")
+//     }
+//   }
+// }
 
 
 
@@ -317,7 +317,7 @@ const authJwt = {
   ownOrder: ownOrder,
   ProductInfo: ProductInfo,
   isAdmin: isAdmin,
-  UpdateOrderByCustomer:UpdateOrderByCustomer,
+  // UpdateOrderByCustomer:UpdateOrderByCustomer,
   DeleteItems: DeleteItems,
   UpdateOrder: UpdateOrder,
   ItemRecord: ItemRecord,
@@ -326,6 +326,7 @@ const authJwt = {
   isCustomer: isCustomer,
   isManufacturerOrAdmin: isManufacturerOrAdmin,
   ExpireDate:ExpireDate,
-  CreateOrder: CreateOrder
+  CreateOrder: CreateOrder,
+  // Updatestatus:Updatestatus
 };
 module.exports = authJwt;
